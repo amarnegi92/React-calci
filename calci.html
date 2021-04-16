@@ -1,0 +1,92 @@
+<html lang="en">
+    <head>
+        <meta  charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">	
+        <title>
+            React Calculator
+        </title>
+        <style>
+            * {
+                font-family:"Lucida Console", "Courier New", monospace;
+            }
+            table {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                top: 0;
+                width: 320px;
+                height: 320px;
+                margin: auto;
+            }
+            table th {
+                height: 65px;
+            }
+            table th, table td {
+                text-align: center;
+            }
+        </style>
+        
+
+    </head>
+    <body>
+        <div id="root">
+        </div>
+    </body>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script type="text/babel">
+        
+        const table = 
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th colSpan="4"><span id="display">Screen</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colSpan="2"><span id="clear">AC</span></td>
+                        <td><span id="divide">/</span></td>
+                        <td><span id="multiply">X</span></td>
+                    </tr>
+                    <tr>
+                        <td><span id="seven">7</span></td>
+                        <td><span id="eight">8</span></td>
+                        <td><span id="nine">9</span></td>
+                        <td><span id="subtract">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><span id="four">4</span></td>
+                        <td><span id="five">5</span></td>
+                        <td><span id="six">6</span></td>
+                        <td><span id="add">+</span></td>
+                    </tr>
+                    <tr>
+                        <td><span id="one">1</span></td>
+                        <td><span id="two">2</span></td>
+                        <td><span id="three">3</span></td>
+                        <td rowSpan="2"><span id="equals">=</span></td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2"><span id="zero">0</span></td>
+                        <td><span id="decimal">.</span></td>
+                    </tr>
+                </tbody>
+            </table>;
+
+            class Calculator extends React.Components {
+                render() {
+                    return (<></>);
+                }
+            }
+        
+        
+        ReactDOM.render(
+            table,
+            document.getElementById('root')
+        );
+     </script>
+</html>
