@@ -22,9 +22,13 @@
             }
             table th {
                 height: 65px;
+                text-align: right;
             }
-            table th, table td {
+            table td {
                 text-align: center;
+            }
+            #display {
+                margin-bottom: 5px;
             }
         </style>
         
@@ -39,11 +43,98 @@
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script type="text/babel">
         
-        const table = 
-            <table border="1">
+
+
+            class Calculator extends React.Component {
+                constructor(props) {
+                    super(props);
+                }
+
+                state = {
+                    stack: '',
+                    display: 0,
+                    bufferNumber: 0,
+                    bufferFloatNumber: 0,
+                    isFloat: false,
+                    evalExp: 0,
+                    place: 1
+                }
+
+                combineExpression = (exp)  => {
+
+                    let tmpBufferNumber = this.state.bufferNumber, tmpPlace = 1, tmpIsFloat = this.state.isFloat, tmpBufferFloatNumber = this.state.bufferFloatNumber;
+                    if (exp == 0 && (this.state.bufferNumber == '' || this.state.bufferNumber == 0) ) {
+                        tmpBufferNumber = 0;
+                    } else if (!isNaN( parseInt(exp) ) || !isNaN( parseFloat(exp) )) {
+                       
+                        if (this.state.isFloat) {
+                            tmpBufferFloatNumber = 10 *  this.state.bufferFloatNumber + exp;
+                        } else {
+                            tmpBufferNumber = 10 * this.state.bufferNumber +  exp;
+                        }
+                    } else  if (exp == '.') {
+                        tmpIsFloat = true;
+                    }
+                    
+                    this.setState((c) => {
+                        return {
+                            bufferNumber: tmpBufferNumber,
+                            bufferFloatNumber: tmpBufferFloatNumber,
+                            place:  tmpPlace,
+                            isFloat: tmpIsFloat
+                        }
+                    });
+
+                    if (exp == '+' || exp == '-' || exp == '*' || exp == '/' ) {
+                        let removeLastChar = 0;
+                        let stringValue = this.state.stack;
+                        if (stringValue.length) {
+                            let lastChar = this.state.stack.slice(-1);
+                            if (parseInt(stringValue)  != stringValue.trim() && this.state.bufferNumber.length == 0) {
+                                if (!Number.isInteger( parseInt(lastChar) )) {
+                                    removeLastChar = -1;
+                                }
+                            }
+
+                        }
+ 
+                        this.setState((c) => {
+                            let fullExp = c.bufferNumber + exp;
+                            if (c.isFloat) {
+                                fullExp = c.bufferNumber + '.' + c.bufferFloatNumber + exp;
+                            }
+                            return {
+                                stack: (removeLastChar) ? c.stack.slice(0, removeLastChar) + fullExp : 
+                                        c.stack + fullExp,
+                                bufferNumber: 0,
+                                bufferFloatNumber: 0, 
+                                isFloat: false
+                            }
+                        });
+                    
+                    }
+
+                    this.setState((c) => {
+                        let fullExp = c.stack + c.bufferNumber;
+                        if (c.stack && c.bufferNumber == 0) {
+                            fullExp = c.stack;
+                        }
+                        return {
+                            display : (c.isFloat) ? 
+                                fullExp + '.' +  c.bufferFloatNumber : fullExp
+                        }
+                    });
+
+
+                }
+                render() {
+                    return (<table border="1">
                 <thead>
                     <tr>
-                        <th colSpan="4"><span id="display">Screen</span></th>
+                        <th colSpan="4">
+                            <div id="display">{this.state.display}</div>
+                            <div>{this.state.evalExp}</div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,39 +144,35 @@
                         <td><span id="multiply">X</span></td>
                     </tr>
                     <tr>
-                        <td><span id="seven">7</span></td>
-                        <td><span id="eight">8</span></td>
-                        <td><span id="nine">9</span></td>
-                        <td><span id="subtract">-</span></td>
+                        <td><button id="seven" onClick={this.combineExpression.bind(this,7)}>7</button></td>
+                        <td><button id="eight" onClick={this.combineExpression.bind(this,8)}>8</button></td>
+                        <td><button id="nine" onClick={this.combineExpression.bind(this,9)}>9</button></td>
+                        <td><button id="subtract" onClick={this.combineExpression.bind(this, '-')}>-</button></td>
                     </tr>
                     <tr>
-                        <td><span id="four">4</span></td>
-                        <td><span id="five">5</span></td>
-                        <td><span id="six">6</span></td>
-                        <td><span id="add">+</span></td>
+                        <td><button id="four" onClick={this.combineExpression.bind(this,4)}>4</button></td>
+                        <td><button id="five" onClick={this.combineExpression.bind(this,5)}>5</button></td>
+                        <td><button id="six" onClick={this.combineExpression.bind(this,6)}>6</button></td>
+                        <td><button id="add" onClick={this.combineExpression.bind(this, '+')}>+</button></td>
                     </tr>
                     <tr>
-                        <td><span id="one">1</span></td>
-                        <td><span id="two">2</span></td>
-                        <td><span id="three">3</span></td>
+                        <td><button id="one" onClick={this.combineExpression.bind(this,1)}>1</button></td>
+                        <td><button id="two" onClick={this.combineExpression.bind(this,2)}>2</button></td>
+                        <td><button id="three" onClick={this.combineExpression.bind(this,3)}>3</button></td>
                         <td rowSpan="2"><span id="equals">=</span></td>
                     </tr>
                     <tr>
-                        <td colSpan="2"><span id="zero">0</span></td>
-                        <td><span id="decimal">.</span></td>
+                        <td colSpan="2"><button id="zero" onClick={this.combineExpression.bind(this,0)}>0</button></td>
+                        <td><button id="decimal" onClick={this.combineExpression.bind(this, '.')}>.</button></td>
                     </tr>
                 </tbody>
-            </table>;
-
-            class Calculator extends React.Components {
-                render() {
-                    return (<></>);
+            </table>);
                 }
             }
         
         
         ReactDOM.render(
-            table,
+            <Calculator />,
             document.getElementById('root')
         );
      </script>
